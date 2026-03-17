@@ -1,0 +1,12 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["@mad/opencode-plugin"],
+  "agent": {
+    "explore": {
+      "tools": { "task": true }
+    },
+    "general": {
+      "tools": { "task": true }
+    }
+  }
+}
