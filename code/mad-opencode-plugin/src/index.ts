@@ -24,6 +24,7 @@
  */
 
 import type { Plugin, PluginInput, Hooks } from '@opencode-ai/plugin';
+import { appendFileSync } from 'node:fs';
 import { hostname } from 'node:os';
 import type {
   PluginState,
@@ -35,6 +36,19 @@ import type {
 import { isSyncEventBody, isSyncMessageBody, isSyncToolBody } from './types.js';
 import { logger } from './logger.js';
 import { EventQueue } from './queue.js';
+
+/**
+ * File logging for debugging (bypasses TUI terminal suppression)
+ */
+const PLUGIN_LOG_FILE = '/tmp/mad-plugin.log';
+function fileLog(message: string): void {
+  try {
+    const timestamp = new Date().toISOString();
+    appendFileSync(PLUGIN_LOG_FILE, `[${timestamp}] ${message}\n`);
+  } catch {
+    // Silently fail if file logging doesn't work
+  }
+}
 
 /**
  * Configuration from environment variables
@@ -155,18 +169,14 @@ function pushEvent(queue: EventQueue, state: PluginState, eventType: string, pay
 export const MadPlugin: Plugin = async (input: PluginInput) => {
   const state = getOrCreateState(input);
 
-  // Print banner
-  console.log('');
-  console.log('╔══════════════════════════════════════════════════════════════════════╗');
-  console.log('║          🚀 MAD OpenCode Plugin Initialized                          ║');
-  console.log('╚══════════════════════════════════════════════════════════════════════╝');
-  console.log('');
-
-  logger.info('Plugin', `Agent ID: ${state.agentId}`);
-  logger.info('Plugin', `Server: ${SERVER_URL}`);
-  logger.info('Plugin', `Directory: ${input.directory}`);
-  logger.info('Plugin', `Project: ${input.project ?? 'none'}`);
-  console.log('');
+  // File log (bypasses TUI suppression)
+  fileLog('========================================');
+  fileLog('🚀 MAD OpenCode Plugin INITIALIZED');
+  fileLog(`Agent ID: ${state.agentId}`);
+  fileLog(`Server: ${SERVER_URL}`);
+  fileLog(`Directory: ${input.directory}`);
+  fileLog(`Project: ${input.project ?? 'none'}`);
+  fileLog('========================================');
 
   // Create queue
   const queue = new EventQueue(SERVER_URL, API_KEY);
@@ -217,18 +227,8 @@ export const MadPlugin: Plugin = async (input: PluginInput) => {
       const sessionId = (event.properties as any)?.sessionId;
       const title = (event.properties as any)?.title;
 
-      // Log session events
-      if (eventType === 'session.create') {
-        console.log('');
-        console.log('┌─────────────────────────────────────────────────────────────────┐');
-        console.log(`│  📁 NEW SESSION: ${title || 'Untitled'}`);
-        console.log(`│  ID: ${formatSessionId(sessionId)}`);
-        console.log('└─────────────────────────────────────────────────────────────────┘');
-      } else if (eventType === 'session.update') {
-        console.log(`  🔄 Session updated: ${formatSessionId(sessionId)}`);
-      } else if (eventType === 'session.compact') {
-        console.log(`  🗜️  Session compacted: ${formatSessionId(sessionId)}`);
-      }
+      // File log session events
+      fileLog(`EVENT: ${eventType} | Session: ${formatSessionId(sessionId)} | Title: ${title || 'Untitled'}`);
 
       const data: SyncEventBody = {
         agentId: state.agentId,
@@ -260,31 +260,8 @@ export const MadPlugin: Plugin = async (input: PluginInput) => {
       const count = (messageCounts.get(sessionId) || 0) + 1;
       messageCounts.set(sessionId, count);
 
-      // Format role emoji
-      const roleEmoji = role === 'user' ? '👤' : role === 'assistant' ? '🤖' : '❓';
-
-      // Log message details
-      console.log('');
-      console.log('  ┌───────────────────────────────────────────────────────────────');
-      console.log(`  │ ${roleEmoji} MESSAGE #${count} | ${role.toUpperCase()} | Session: ${formatSessionId(sessionId)}`);
-      console.log('  ├───────────────────────────────────────────────────────────────');
-      if (agent) {
-        console.log(`  │  📦 Agent: ${agent}`);
-      }
-      if (modelId) {
-        console.log(`  │  🧠 Model: ${modelId}`);
-      }
-      console.log(`  │  📝 Parts: ${partCount} | Message ID: ${messageId}`);
-      console.log('  └───────────────────────────────────────────────────────────────');
-
-      // Log parts if DEBUG is enabled
-      if (process.env.MAD_DEBUG === '1' && output.parts) {
-        for (let i = 0; i < output.parts.length; i++) {
-          const part = output.parts[i] as any;
-          const partType = part.type;
-          console.log(`     ${i + 1}. [${partType}]`);
-        }
-      }
+      // File log message
+      fileLog(`MESSAGE #${count} | ${role.toUpperCase()} | Session: ${formatSessionId(sessionId)} | Model: ${modelId || 'N/A'} | Agent: ${agent || 'N/A'}`);
 
       const data = {
         agentId: state.agentId,
@@ -325,34 +302,14 @@ export const MadPlugin: Plugin = async (input: PluginInput) => {
       const count = (toolCounts.get(toolKey) || 0) + 1;
       toolCounts.set(toolKey, count);
 
-      // Format tool emoji
-      const toolEmojis: Record<string, string> = {
-        'Read': '📖',
-        'Edit': '✏️',
-        'Bash': '💻',
-        'Grep': '🔍',
-        'Glob': '🌐',
-        'task': '🔄',
-        'Write': '📝',
-        'Skill': '🔧',
-      };
-      const toolEmoji = toolEmojis[toolName] || '🔧';
-
-      // Log tool execution
-      console.log('');
-      console.log('  ┌───────────────────────────────────────────────────────────────');
-      console.log(`  │ ${toolEmoji} TOOL | ${toolName} | Session: ${formatSessionId(sessionId)}`);
-      console.log('  ├───────────────────────────────────────────────────────────────');
-      console.log(`  │  📋 Title: ${title || '(no title)'}`);
-      console.log(`  │  📤 Output: ${outputLength} chars`);
-      console.log(`  │  🔑 Call ID: ${callId?.slice(0, 12)}...`);
-      console.log('  └───────────────────────────────────────────────────────────────');
+      // File log tool execution
+      fileLog(`TOOL: ${toolName} | Session: ${formatSessionId(sessionId)} | Title: ${title || '(no title)'} | Output: ${outputLength} chars`);
 
       // Special logging for task spawns
       if (toolName === 'task') {
         const taskInput = input as any;
         if (taskInput.subagent_type) {
-          console.log(`     👶 Spawning sub-agent: ${taskInput.subagent_type}`);
+          fileLog(`  👶 Spawning sub-agent: ${taskInput.subagent_type}`);
         }
       }
 
@@ -380,10 +337,6 @@ export const MadPlugin: Plugin = async (input: PluginInput) => {
       }
     },
   };
-
-  console.log('');
-  console.log('✅ Plugin ready and listening for events...');
-  console.log('');
 
   return hooks;
 };

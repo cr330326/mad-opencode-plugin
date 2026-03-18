@@ -4,28 +4,59 @@
 
 ### 1️⃣ 本地开发模式（推荐用于测试）
 
-运行自动设置脚本：
+#### ⚠️ 重要说明
+
+如果插件还未发布到 npm，OpenCode 会尝试从 npm registry 下载并失败。请使用以下**本地安装方法**：
+
+```bash
+cd code/mad-opencode-plugin
+
+# 1. 构建
+npm run build
+
+# 2. 创建插件包
+npm pack
+
+# 3. 安装到 OpenCode 缓存目录
+PLUGIN_CACHE_DIR="$HOME/.cache/opencode/node_modules/@mad"
+mkdir -p "$PLUGIN_CACHE_DIR"
+
+# 解压插件包
+tar -xzf mad-opencode-plugin-*.tgz -C "$PLUGIN_CACHE_DIR"
+mv "$PLUGIN_CACHE_DIR/package" "$PLUGIN_CACHE_DIR/opencode-plugin"
+
+# 4. 安装依赖
+cd "$PLUGIN_CACHE_DIR/opencode-plugin"
+npm install
+
+# 5. 配置 OpenCode 使用本地路径
+# 编辑 ~/.config/opencode/opencode.json
+```
+
+在 `~/.config/opencode/opencode.json` 中添加插件配置：
+
+```json
+{
+  "plugin": [
+    "file:///Users/vsh9p8q/.cache/opencode/node_modules/@mad/opencode-plugin"
+  ]
+}
+```
+
+**注意**：
+
+- 配置文件是 `~/.config/opencode/opencode.json`（不是 `config.json`）
+- 插件路径必须是 `file://` 开头的绝对路径
+- 将 `vsh9p8q` 替换为你的用户名
+
+#### 自动设置脚本
 
 ```bash
 cd code/mad-opencode-plugin
 make setup
 ```
 
-或者手动执行：
-
-```bash
-# 1. 构建
-npm run build
-
-# 2. 链接到全局
-npm link
-
-# 3. 配置 OpenCode
-# 编辑 ~/.config/opencode/opencode.json，添加：
-{
-  "plugin": ["@mad/opencode-plugin"]
-}
-```
+这将自动执行上述所有步骤。
 
 ### 2️⃣ 设置环境变量
 
@@ -61,97 +92,84 @@ opencode
 
 插件会自动加载并开始同步！
 
+### 4️⃣ 验证插件运行
+
+插件启动后，检查日志文件确认是否正常运行：
+
+```bash
+# 查看插件日志
+cat /tmp/mad-plugin.log
+```
+
+应该看到类似输出：
+
+```text
+========================================
+🚀 MAD OpenCode Plugin INITIALIZED
+Agent ID: opencode-xxx
+Server: http://localhost:3000
+Directory: /your/project
+========================================
+```
+
+或者实时查看日志：
+
+```bash
+tail -f /tmp/mad-plugin.log
+```
+
 ## 本地测试（无 MAD Server）
 
-即使 MAD Server 尚未开发完成，您也可以进行本地测试。插件会在终端中实时输出所有捕获的事件信息。
+即使 MAD Server 尚未开发完成，您也可以进行本地测试。插件会记录所有捕获的事件到日志文件。
+
+### ⚠️ 关于日志输出
+
+**重要**：当 OpenCode 在 TUI（终端界面）模式运行时，`console.log` 输出会被抑制，您在终端中**不会**看到插件的控制台输出。
+
+要查看插件日志，请使用：
+
+```bash
+# 查看完整日志
+cat /tmp/mad-plugin.log
+
+# 实时跟踪日志
+tail -f /tmp/mad-plugin.log
+```
 
 ### 日志输出示例
 
-当您在 OpenCode 中进行对话时，会看到类似以下的实时输出：
+当您在 OpenCode 中进行对话时，`/tmp/mad-plugin.log` 中会记录类似以下内容：
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║          🚀 MAD OpenCode Plugin Initialized                          ║
-╚══════════════════════════════════════════════════════════════════════╝
+```text
+[2026-03-18T04:47:08.555Z] ========================================
+[2026-03-18T04:47:08.556Z] 🚀 MAD OpenCode Plugin INITIALIZED
+[2026-03-18T04:47:08.556Z] Agent ID: opencode-CICNBJSMCCD0160
+[2026-03-18T04:47:08.556Z] Server: http://localhost:3000
+[2026-03-18T04:47:08.556Z] Directory: /Users/yourname/project
+[2026-03-18T04:47:08.556Z] ========================================
 
-[2025-03-17T...] [INFO] [Plugin] Agent ID: opencode-<hostname>
-[2025-03-17T...] [INFO] [Plugin] Server: http://localhost:3000
-[2025-03-17T...] [INFO] [Plugin] Directory: /your/project
-[2025-03-17T...] [INFO] [Plugin] Project: your-project
+[2026-03-18T04:48:15.123Z] EVENT: session.create | Session: ses_abc123... | Title: Help me write code
 
-✅ Plugin ready and listening for events...
+[2026-03-18T04:48:16.234Z] MESSAGE #1 | USER | Session: ses_abc123... | Model: claude-sonnet-4-20250514 | Agent: N/A
 
-┌─────────────────────────────────────────────────────────────────┐
-│  📁 NEW SESSION: Help me write code                             │
-│  ID: ses_1234...                                                 │
-└─────────────────────────────────────────────────────────────────┘
+[2026-03-18T04:48:20.456Z] MESSAGE #2 | ASSISTANT | Session: ses_abc123... | Model: claude-sonnet-4-20250514 | Agent: general
 
-  ┌───────────────────────────────────────────────────────────────
-  │ 👤 MESSAGE #1 | USER | Session: ses_1234...
-  │ ├───────────────────────────────────────────────────────────────
-  │  🧠 Model: claude-sonnet-4-20250514
-  │  📝 Parts: 1 | Message ID: msg_5678...
-  │ └───────────────────────────────────────────────────────────────
+[2026-03-18T04:48:25.789Z] TOOL: Read | Session: ses_abc123... | Title: Read file | Output: 1234 chars
 
-  ┌───────────────────────────────────────────────────────────────
-  │ 🤖 MESSAGE #2 | ASSISTANT | Session: ses_1234...
-  │ ├───────────────────────────────────────────────────────────────
-  │  📦 Agent: general
-  │  🧠 Model: claude-sonnet-4-20250514
-  │  📝 Parts: 3 | Message ID: msg_9012...
-  │ └───────────────────────────────────────────────────────────────
+[2026-03-18T04:48:30.012Z] TOOL: Bash | Session: ses_abc123... | Title: List files | Output: 456 chars
 
-  ┌───────────────────────────────────────────────────────────────
-  │ 📖 TOOL | Read | Session: ses_1234...
-  │ ├───────────────────────────────────────────────────────────────
-  │  📋 Title: Read file
-  │  📤 Output: 1234 chars
-  │  🔑 Call ID: call_3456...
-  │ └───────────────────────────────────────────────────────────────
-
-  ┌───────────────────────────────────────────────────────────────
-  │ 💻 TOOL | Bash | Session: ses_1234...
-  │ ├───────────────────────────────────────────────────────────────
-  │  📋 Title: List files
-  │  📤 Output: 456 chars
-  │  🔑 Call ID: call_7890...
-  │ └───────────────────────────────────────────────────────────────
-
-  🔄 Session updated: ses_1234...
+[2026-03-18T04:48:35.345Z] EVENT: session.update | Session: ses_abc123... | Title: Updated session title
 ```
 
-### 工具图标说明
+### 事件类型说明
 
-| 工具 | 图标 | 用途 |
-| :--- | :---: | :--- |
-| Read | 📖 | 读取文件 |
-| Edit | ✏️ | 编辑文件 |
-| Bash | 💻 | 执行命令 |
-| Grep | 🔍 | 搜索内容 |
-| Glob | 🌐 | 查找文件 |
-| task | 🔄 | 子 Agent |
-| Write | 📝 | 写入文件 |
-| Skill | 🔧 | 执行技能 |
-
-### 特殊日志
-
-- **子 Agent 生成**：当使用 `task` 工具创建子 Agent 时，会显示：
-
-  ```text
-     👶 Spawning sub-agent: explore
-  ```
-
-- **Session 更新**：当 Session 标题或状态变化时：
-
-  ```text
-  🔄 Session updated: ses_1234...
-  ```
-
-- **Session 压缩**：当 Session 被压缩时：
-
-  ```text
-  🗜️  Session compacted: ses_1234...
-  ```
+| 事件类型 | 说明 |
+| :--- | :--- |
+| `session.create` | 新会话创建 |
+| `session.update` | 会话更新（标题变更等） |
+| `session.compact` | 会话压缩 |
+| `MESSAGE` | 聊天消息（USER/ASSISTANT） |
+| `TOOL` | 工具执行（Read/Bash/Grep 等） |
 
 ### 禁用详细日志
 
@@ -263,11 +281,48 @@ npm install -g @mad/opencode-plugin
 
 ## 故障排查
 
+### 插件加载失败？npm 404 错误？
+
+如果看到类似这样的错误：
+
+```text
+ERROR ... service=plugin pkg=@mad/opencode-plugin ...
+error: GET https://registry.npmjs.org/@mad%2fopencode-plugin - 404 failed to install plugin
+```
+
+这是因为插件还未发布到 npm。OpenCode 会尝试从 npm registry 下载包。
+
+**解决方案**：使用本地安装方法（见上文"本地开发模式"）
+
 ### 插件没有加载？
 
-1. 检查 OpenCode 配置文件是否存在
-2. 确认插件名称正确：`@mad/opencode-plugin`
-3. 查看 OpenCode 日志：`opencode --verbose`
+1. **检查配置文件位置**：确保编辑的是 `~/.config/opencode/opencode.json`（不是 `config.json`）
+2. **确认插件路径**：本地开发时必须使用 `file://` 绝对路径
+3. **查看 OpenCode 日志**：
+
+   ```bash
+   # 查看最新日志
+   ls -t ~/.local/share/opencode/log/*.log | head -1 | xargs cat | grep -i plugin
+   ```
+
+### 如何验证插件是否工作？
+
+插件会在启动时创建日志文件：
+
+```bash
+# 检查插件日志
+cat /tmp/mad-plugin.log
+```
+
+应该看到类似输出：
+
+```text
+[2026-03-18T...] ========================================
+[2026-03-18T...] 🚀 MAD OpenCode Plugin INITIALIZED
+[2026-03-18T...] Agent ID: opencode-xxx
+[2026-03-18T...] Server: http://localhost:3000
+[2026-03-18T...] ========================================
+```
 
 ### 事件没有发送到 Dashboard？
 
