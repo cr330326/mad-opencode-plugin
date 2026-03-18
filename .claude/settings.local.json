@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm list:*)"
+      "Bash(npm list:*)",
+      "Bash(cd:*)",
+      "Bash(npm pack:*)",
+      "Bash(npm whoami:*)",
+      "Bash(npm publish:*)"
     ]
   }
 }

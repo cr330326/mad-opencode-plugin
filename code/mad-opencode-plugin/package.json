@@ -1,5 +1,5 @@
 {
-  "name": "@mad/opencode-plugin",
+  "name": "mad-opencode-plugin",
   "version": "0.1.0",
   "description": "MAD (Multi-Agent Dashboard) plugin for OpenCode",
   "type": "module",
@@ -13,7 +13,10 @@
   },
   "files": [
     "dist",
-    "opencode.example.json"
+    "opencode.example.json",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "tsc",
@@ -31,12 +34,16 @@
     "agent",
     "visualization"
   ],
-  "author": "",
+  "author": "cr330326 <cr330326@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git+https://github.com/cr330326/mad-opencode-plugin.git"
   },
+  "bugs": {
+    "url": "https://github.com/cr330326/mad-opencode-plugin/issues"
+  },
+  "homepage": "https://github.com/cr330326/mad-opencode-plugin#readme",
   "dependencies": {
     "@opencode-ai/plugin": "^1.2.20"
   },
