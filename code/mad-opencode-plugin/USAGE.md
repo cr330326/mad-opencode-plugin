@@ -38,7 +38,7 @@ npm install
 ```json
 {
   "plugin": [
-    "file:///Users/vsh9p8q/.cache/opencode/node_modules/@mad/opencode-plugin"
+    "file:///Users/用户名/.cache/opencode/node_modules/@mad/opencode-plugin"
   ]
 }
 ```

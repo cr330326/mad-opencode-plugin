@@ -13,7 +13,7 @@
  * Install:
  *   Add to ~/.config/opencode/config.json:
  *   {
- *     "plugin": ["@mad/opencode-plugin"]
+ *     "plugin": ["mad-opencode-plugin"]
  *   }
  *
  * Configure:
