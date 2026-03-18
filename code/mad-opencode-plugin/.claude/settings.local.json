@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm view:*)",
+      "Bash(npm install:*)",
+      "Bash(npm list:*)",
+      "Bash(git push:*)",
+      "Bash(cd:*)",
+      "Bash(npm publish:*)"
+    ]
+  }
+}

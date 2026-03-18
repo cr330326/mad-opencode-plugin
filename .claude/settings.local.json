@@ -5,7 +5,8 @@
       "Bash(cd:*)",
       "Bash(npm pack:*)",
       "Bash(npm whoami:*)",
-      "Bash(npm publish:*)"
+      "Bash(npm publish:*)",
+      "Bash(find:*)"
     ]
   }
 }
