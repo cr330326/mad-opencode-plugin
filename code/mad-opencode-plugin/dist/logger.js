@@ -4,9 +4,18 @@
  * Provides DEBUG-controlled logging output with different log levels.
  * Enable debug logging by setting MAD_DEBUG=1 or DEBUG=mad:* environment variable.
  */
-import { appendFileSync } from 'node:fs';
+import { appendFileSync, mkdirSync } from 'node:fs';
+import { dirname } from 'node:path';
 const DEBUG = process.env.MAD_DEBUG === '1' || process.env.DEBUG?.includes('mad:*');
 const PLUGIN_LOG_FILE = `${process.env.HOME}/.opencode/log/mad-plugin.log`;
+const PLUGIN_LOG_DIR = dirname(PLUGIN_LOG_FILE);
+// Ensure log directory exists on module load
+try {
+    mkdirSync(PLUGIN_LOG_DIR, { recursive: true });
+}
+catch {
+    // Silently fail if directory creation fails
+}
 /**
  * Log levels
  */

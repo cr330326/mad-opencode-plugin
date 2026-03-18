@@ -24,7 +24,8 @@
  */
 
 import type { Plugin, PluginInput, Hooks } from '@opencode-ai/plugin';
-import { appendFileSync } from 'node:fs';
+import { appendFileSync, mkdirSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { hostname } from 'node:os';
 import type {
   PluginState,
@@ -41,6 +42,15 @@ import { EventQueue } from './queue.js';
  * File logging for debugging (bypasses TUI terminal suppression)
  */
 const PLUGIN_LOG_FILE = `${process.env.HOME}/.opencode/log/mad-plugin.log`;
+const PLUGIN_LOG_DIR = dirname(PLUGIN_LOG_FILE);
+
+// Ensure log directory exists on module load
+try {
+  mkdirSync(PLUGIN_LOG_DIR, { recursive: true });
+} catch {
+  // Silently fail if directory creation fails
+}
+
 function fileLog(message: string): void {
   try {
     const timestamp = new Date().toISOString();
