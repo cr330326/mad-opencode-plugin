@@ -1,6 +1,6 @@
 ---
 description: Quick git commit with auto-generated or specified message
-argument-hint: [optional: commit message]
+argument-hint: "[optional: commit message]"
 disable-model-invocation: true
 allowed-tools: Bash(git status:*), Bash(git add:*), Bash(git commit:*), Bash(git diff:*)
 ---
