@@ -6,7 +6,14 @@
       "Bash(npm pack:*)",
       "Bash(npm whoami:*)",
       "Bash(npm publish:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "mcp__web-reader__webReader",
+      "Read(//Users/vsh9p8q/.config/opencode/**)",
+      "Bash(npm run:*)",
+      "Bash(node:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   }
 }
