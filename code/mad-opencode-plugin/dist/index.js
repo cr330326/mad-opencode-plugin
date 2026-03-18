@@ -30,7 +30,7 @@ import { EventQueue } from './queue.js';
 /**
  * File logging for debugging (bypasses TUI terminal suppression)
  */
-const PLUGIN_LOG_FILE = '/tmp/mad-plugin.log';
+const PLUGIN_LOG_FILE = `${process.env.HOME}/.opencode/log/mad-plugin.log`;
 function fileLog(message) {
     try {
         const timestamp = new Date().toISOString();

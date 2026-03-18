@@ -6,7 +6,7 @@
  */
 import { appendFileSync } from 'node:fs';
 const DEBUG = process.env.MAD_DEBUG === '1' || process.env.DEBUG?.includes('mad:*');
-const PLUGIN_LOG_FILE = '/tmp/mad-plugin.log';
+const PLUGIN_LOG_FILE = `${process.env.HOME}/.opencode/log/mad-plugin.log`;
 /**
  * Log levels
  */
