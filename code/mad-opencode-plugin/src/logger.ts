@@ -5,7 +5,10 @@
  * Enable debug logging by setting MAD_DEBUG=1 or DEBUG=mad:* environment variable.
  */
 
+import { appendFileSync } from 'node:fs';
+
 const DEBUG = process.env.MAD_DEBUG === '1' || process.env.DEBUG?.includes('mad:*');
+const PLUGIN_LOG_FILE = '/tmp/mad-plugin.log';
 
 /**
  * Log levels
@@ -28,6 +31,17 @@ const LEVEL_NAMES: Record<LogLevel, string> = {
 };
 
 /**
+ * Write to log file
+ */
+function writeToFile(message: string): void {
+  try {
+    appendFileSync(PLUGIN_LOG_FILE, `${message}\n`);
+  } catch {
+    // Silently fail if file logging doesn't work
+  }
+}
+
+/**
  * Determine if a log level should be output
  */
 function shouldLog(level: LogLevel): boolean {
@@ -45,9 +59,9 @@ export function log(level: LogLevel, category: string, message: string, ...args:
   const prefix = `[${timestamp}] [${LEVEL_NAMES[level]}] [${category}]`;
 
   if (args.length > 0) {
-    console.log(prefix, message, ...args);
+    writeToFile(`${prefix} ${message} ${args.map(String).join(' ')}`);
   } else {
-    console.log(prefix, message);
+    writeToFile(`${prefix} ${message}`);
   }
 }
 
