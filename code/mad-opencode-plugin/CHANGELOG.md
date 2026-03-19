@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.2] - 2026-03-18
 
 ### Fixed
-- Auto-create `~/.opencode/log/` directory if it doesn't exist when writing log file
+- Auto-create `~/.config/opencode/log/` directory if it doesn't exist when writing log file
+- Updated log path from `~/.opencode/log/` to `~/.config/opencode/log/`
 
 ## [0.1.0] - 2026-03-18
 
