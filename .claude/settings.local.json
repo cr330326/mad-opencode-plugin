@@ -13,7 +13,14 @@
       "Bash(node:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(make setup:*)",
+      "Bash(MAD_DEBUG=1 node --input-type=module -e \"\nconsole.log\\('🧪 开始测试 MAD OpenCode Plugin...\\\\n'\\);\n\n// 模拟插件环境\nprocess.env.MAD_SERVER_URL = process.env.MAD_SERVER_URL || 'http://localhost:3000';\nprocess.env.MAD_API_KEY = process.env.MAD_API_KEY || 'dev-key';\n\n// 动态导入插件\nconst pluginPath = '/Users/vsh9p8q/.cache/opencode/node_modules/@mad/opencode-plugin/dist/index.js';\nconst pluginModule = await import\\(pluginPath\\);\n\nconsole.log\\('✅ 插件模块加载成功'\\);\nconsole.log\\('导出内容:', Object.keys\\(pluginModule\\)\\);\n\n// 检查日志目录是否创建\nconst fs = await import\\('fs'\\);\nconst logDir = process.env.HOME + '/.config/opencode/log';\nif \\(fs.existsSync\\(logDir\\)\\) {\n  console.log\\('✅ 日志目录已创建:', logDir\\);\n  const files = fs.readdirSync\\(logDir\\);\n  console.log\\('   目录内容:', files\\);\n} else {\n  console.log\\('❌ 日志目录未创建'\\);\n}\n\n// 检查日志文件\nconst logFile = logDir + '/mad-plugin.log';\nif \\(fs.existsSync\\(logFile\\)\\) {\n  console.log\\('✅ 日志文件已创建:', logFile\\);\n  const content = fs.readFileSync\\(logFile, 'utf-8'\\);\n  console.log\\('   日志内容:'\\);\n  content.split\\('\\\\n'\\).forEach\\(line => {\n    if \\(line\\) console.log\\('   ', line\\);\n  }\\);\n}\n\nconsole.log\\('\\\\n✅ 测试完成！'\\);\n\")",
+      "Bash(make build:*)",
+      "Bash(npm login:*)",
+      "Bash(npm version:*)",
+      "Bash(npm config:*)",
+      "Bash(npm logout:*)"
     ]
   }
 }

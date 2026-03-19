@@ -1,6 +1,6 @@
 {
   "name": "mad-opencode-plugin",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "MAD (Multi-Agent Dashboard) plugin for OpenCode",
   "type": "module",
   "main": "./dist/index.js",
