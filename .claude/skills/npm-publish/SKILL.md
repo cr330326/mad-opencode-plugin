@@ -7,7 +7,7 @@ allowed-tools: Read(*), Bash(npm *), Bash(node *), Bash(ls *), Bash(cat package.
 
 Prepare npm package for publishing with pre-flight checks and build.
 
-> **Note**: npm 现在使用设备扫码授权，需要交互式终端。此 skill 只做预检查和构建，最后需要用户在终端手动执行发布命令。
+> **Note**: npm 现在使用手机扫码授权（非 OTP 码），需要交互式终端。此 skill 只做预检查和构建，最后需要用户在终端手动执行发布命令。
 
 ## Steps
 
@@ -63,5 +63,5 @@ Prepare npm package for publishing with pre-flight checks and build.
 
 ## Notes
 
-- Device auth (扫码授权) requires interactive terminal - cannot be automated
+- Device auth 使用手机扫码登录（非 OTP 码输入），需要交互式终端，无法自动化
 - Version bump should be done before running this skill
