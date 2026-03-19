@@ -26,7 +26,7 @@
 import type { Plugin, PluginInput, Hooks } from '@opencode-ai/plugin';
 import { appendFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { hostname } from 'node:os';
+import { hostname, homedir } from 'node:os';
 import type {
   PluginState,
   PostEventBody,
@@ -41,7 +41,7 @@ import { EventQueue } from './queue.js';
 /**
  * File logging for debugging (bypasses TUI terminal suppression)
  */
-const PLUGIN_LOG_FILE = `${process.env.HOME}/.config/opencode/log/mad-plugin.log`;
+const PLUGIN_LOG_FILE = `${homedir()}/.config/opencode/log/mad-plugin.log`;
 const PLUGIN_LOG_DIR = dirname(PLUGIN_LOG_FILE);
 
 // Ensure log directory exists on module load
