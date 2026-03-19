@@ -98,7 +98,7 @@ opencode
 
 ```bash
 # 查看插件日志
-cat ~/.opencode/log/mad-plugin.log
+cat ~/.config/opencode/log/mad-plugin.log
 ```
 
 应该看到类似输出：
@@ -115,7 +115,7 @@ Directory: /your/project
 或者实时查看日志：
 
 ```bash
-tail -f ~/.opencode/log/mad-plugin.log
+tail -f ~/.config/opencode/log/mad-plugin.log
 ```
 
 ## 本地测试（无 MAD Server）
@@ -130,15 +130,15 @@ tail -f ~/.opencode/log/mad-plugin.log
 
 ```bash
 # 查看完整日志
-cat ~/.opencode/log/mad-plugin.log
+cat ~/.config/opencode/log/mad-plugin.log
 
 # 实时跟踪日志
-tail -f ~/.opencode/log/mad-plugin.log
+tail -f ~/.config/opencode/log/mad-plugin.log
 ```
 
 ### 日志输出示例
 
-当您在 OpenCode 中进行对话时，`~/.opencode/log/mad-plugin.log` 中会记录类似以下内容：
+当您在 OpenCode 中进行对话时，`~/.config/opencode/log/mad-plugin.log` 中会记录类似以下内容：
 
 ```text
 [2026-03-18T04:47:08.555Z] ========================================
@@ -311,7 +311,7 @@ error: GET https://registry.npmjs.org/@mad%2fopencode-plugin - 404 failed to ins
 
 ```bash
 # 检查插件日志
-cat ~/.opencode/log/mad-plugin.log
+cat ~/.config/opencode/log/mad-plugin.log
 ```
 
 应该看到类似输出：

@@ -83,14 +83,14 @@ make setup   # Runs scripts/setup.sh
 
 ## Logs
 
-Plugin logs are written to `~/.opencode/log/mad-plugin.log` (bypasses TUI terminal suppression):
+Plugin logs are written to `~/.config/opencode/log/mad-plugin.log` (bypasses TUI terminal suppression):
 
 ```bash
 # View logs
-cat ~/.opencode/log/mad-plugin.log
+cat ~/.config/opencode/log/mad-plugin.log
 
 # Real-time monitoring
-tail -f ~/.opencode/log/mad-plugin.log
+tail -f ~/.config/opencode/log/mad-plugin.log
 ```
 
 ## Key Implementation Details

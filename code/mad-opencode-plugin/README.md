@@ -63,7 +63,7 @@ npm run build
 
 ## 日志
 
-插件运行日志位于 `~/.opencode/log/mad-plugin.log`。
+插件运行日志位于 `~/.config/opencode/log/mad-plugin.log`。
 
 ## License
 
